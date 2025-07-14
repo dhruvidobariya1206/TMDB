@@ -1,0 +1,18 @@
+.main-content {
+  display: flex;
+  /* margin-left: 200px; */
+  gap: 20px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.content {
+  width: 75%;
+}
+
+.movie-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  padding: 0 70px 0 40px;
+}
