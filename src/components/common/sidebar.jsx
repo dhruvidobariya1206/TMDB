@@ -3,7 +3,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { getPlatforms, getCountries, getGenres } from "../../service/serverService";
-import "./sidebar.css";
+import "../../styles/components/sidebar.css";
 
 const sortOptions = [
   { value: "popularity.desc", label: "Popularity Descending" },
@@ -46,7 +46,6 @@ export default function Sidebar({ filter, onChange }) {
     fetchCountries();
     fetchGenres();
   }, []);
-  console.log("Available Genres:", genres);
 
   useEffect(() => {
     const fetchPlatforms = async () => {

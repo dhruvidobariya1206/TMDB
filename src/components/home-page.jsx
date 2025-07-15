@@ -2,9 +2,9 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import "./style.css";
+import "../styles/components/home-page.css";
 import { getTrendingMovies } from "../../service/serverService";
-import MovieCard from "../common/movieCard";
+import MovieCard from "../common/movie-card";
 
 const TRAILER_TABS = {
   popular: "popular",

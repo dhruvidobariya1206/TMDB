@@ -2,10 +2,10 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
-import MovieCard from "@/components/common/movieCard";
+import MovieCard from "@/components/common/movie-card";
 import Sidebar from "@/components/common/sidebar";
 import { getPopularMovies, discoverMovie } from "../../../service/serverService";
-import "../style.css";
+import "../../../styles/pages/movies.css";
 
 
 export default function Page() {

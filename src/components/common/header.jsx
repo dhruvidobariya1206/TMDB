@@ -2,29 +2,10 @@
 
 import React from "react";
 import { useState } from "react";
-import "./header.css";
+import "../../styles/components/header.css";
 import Link from "next/link";
+import { headerLinks } from "@/utils/constant";
 
-const navItems = [
-  {
-    label: "Movies",
-    menu: [
-      { label: "Popular", path: "/movies/popular" },
-      { label: "Now Playing", path: "/movies/nowPlaying" },
-      { label: "Upcoming", path: "/movies/upcoming" },
-      { label: "Top Rated", path: "/movies/topRated" },
-    ],
-  },
-  {
-    label: "TV Shows",
-    menu: [
-      { label: "Popular", path: "" },
-      { label: "Airing Today", path: "" },
-      { label: "On TV", path: "" },
-      { label: "Top Rated", path: "" },
-    ],
-  },
-];
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -39,7 +20,7 @@ export default function Header() {
               <Link href="/">TMDB</Link>
             </div>
             <nav className="nav-menu">
-              {navItems.map(({ label, menu }, index) => (
+              {headerLinks.map(({ label, menu }, index) => (
                 <div
                   className="nav-item"
                   key={index}
