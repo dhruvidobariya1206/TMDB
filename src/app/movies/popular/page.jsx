@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MovieCard from "@/components/common/movie-card";
 import Sidebar from "@/components/common/sidebar";
 import { getPopularMovies, discoverMovie } from "../../../service/serverService";
@@ -16,19 +15,15 @@ export default function Page() {
   });
   
   const updateFilters = (newFilters) => {
-    console.log("Updating filters with:", newFilters);
     setFilters((prevFilters) => ({
       ...prevFilters,
       ...newFilters,
     }));
   }
-
-  console.log("Filters:", filters);
   
   useEffect(() => {
     const fetchData = async () => {
       const popularMovies = await getPopularMovies();
-      console.log("Popular Movies:", popularMovies);
       
       setMovies(popularMovies.data.results);
     };
@@ -52,8 +47,11 @@ export default function Page() {
         <div className="content">
           <div className="movie-grid">
             {movies.map((movie, i) => (
-              <MovieCard key={i} movie={movie} />
+              <MovieCard key={i} {...movie} />
             ))}
+            <div className="load-more-button">
+              <button>Load More</button>
+            </div>
           </div>
         </div>
       </div>

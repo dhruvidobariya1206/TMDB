@@ -1,8 +1,8 @@
 import '../../styles/components/movie-card.css';
 
-export default function MovieCard({movie, i}) {
+export default function MovieCard({...movie}) {
   return (
-    <div key={i} className="movie-card">
+    <div className="movie-card">
       <div className="movie-poster-placeholder">
         <img
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

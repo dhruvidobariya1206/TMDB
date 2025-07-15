@@ -1,18 +1,9 @@
 "use client";
 
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getPlatforms, getCountries, getGenres } from "../../service/serverService";
+import { sortOptions } from "@/utils/constant";
 import "../../styles/components/sidebar.css";
-
-const sortOptions = [
-  { value: "popularity.desc", label: "Popularity Descending" },
-  { value: "popularity.asc", label: "Popularity Ascending" },
-  { value: "vote_average.desc", label: "Rating Descending" },
-  { value: "vote_average.asc", label: "Rating Ascending" },
-  { value: "primary_release_date.desc", label: "Release Date Descending" },
-  { value: "primary_release_date.asc", label: "Release Date Ascending" }
-];
 
 export default function Sidebar({ filter, onChange }) {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(true);
@@ -21,10 +12,9 @@ export default function Sidebar({ filter, onChange }) {
   const [platforms, setPlatforms] = useState([]);
   const [countries, setCountries] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState();
+  const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
-  // let genres = [];
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -43,8 +33,10 @@ export default function Sidebar({ filter, onChange }) {
       const response = await getGenres();
       setGenres(response.data.genres || []);
     };
-    fetchCountries();
-    fetchGenres();
+    Promise.all([
+      fetchCountries(),
+      fetchGenres(),
+    ])
   }, []);
 
   useEffect(() => {
@@ -54,7 +46,9 @@ export default function Sidebar({ filter, onChange }) {
       setPlatforms(response.data.results || []);
     };
 
-    fetchPlatforms();
+    if(selectedCountry) {
+      fetchPlatforms();
+    }
   }, [selectedCountry]);
 
   const handleSortChange = (e) => {
@@ -120,22 +114,19 @@ export default function Sidebar({ filter, onChange }) {
               </select>
               <h3 className="section-title">Platforms</h3>
               <form onSubmit={handlePlatformChange}>
-                <ul className="platform-list">
+                <ul className="check-list">
                   {platforms.map((platform, i) => (
-                    <li key={i} className="platform-item">
+                    <li key={i} className="check-item">
                       <label>
                         <input
                           type="checkbox"
-                          id="platform-checkbox"
                           key={i}
                           value={platform.provider_id}
                           onChange={()=> {
                             const isChecked = selectedPlatform.includes(platform.provider_id);
-                            console.log("Checkbox clicked for platform:", platform, "Checked:", !isChecked);
                             const newPlatforms = isChecked
                               ? selectedPlatform.filter(id => id !== platform.provider_id)
                               : [...selectedPlatform, platform.provider_id];
-                            console.log("Selected Platforms:", newPlatforms);
                             setSelectedPlatform(newPlatforms);
                           }}
                         />
@@ -162,20 +153,18 @@ export default function Sidebar({ filter, onChange }) {
             <div className="section-header">
               <h3 className="section-title">Genres</h3>
               <form onSubmit={handleGenreChange}>
-                <ul className="genre-list">
+                <ul className="check-list">
                   {genres.map((genre, i) => (
-                    <li key={i} className="genre-item">
+                    <li key={i} className="check-item">
                       <label>
                         <input
                           type="checkbox"
                           value={genre.id}
                           onChange={()=> {
                             const isChecked = selectedGenres.includes(genre.id);
-                            console.log("Checkbox clicked for platform:", genre, "Checked:", !isChecked);
                             const newGenres = isChecked
                               ? selectedGenres.filter(id => id !== genre.id)
                               : [...selectedGenres, genre.id];
-                            console.log("Selected Platforms:", newGenres);
                             setSelectedGenres(newGenres);
                           }}
                         />

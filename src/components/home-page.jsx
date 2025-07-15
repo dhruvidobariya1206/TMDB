@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import MovieCard from "./common/movie-card";
+import { getTrendingMovies } from "../service/serverService";
 import "../styles/components/home-page.css";
-import { getTrendingMovies } from "../../service/serverService";
-import MovieCard from "../common/movie-card";
 
 const TRAILER_TABS = {
   popular: "popular",
@@ -71,7 +70,7 @@ export default function HomePage() {
           <div className="fade-left"></div>
           <div className="trending-scroll">
             {movies.map((movie, i) => (
-              <MovieCard key={i} movie={movie} />
+              <MovieCard key={i} {...movie} />
             ))}
           </div>
           <div className="fade-right"></div>

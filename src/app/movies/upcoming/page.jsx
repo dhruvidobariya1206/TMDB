@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MovieCard from "@/components/common/movie-card";
 import Sidebar from "@/components/common/sidebar";
 import { getUpcomingMovies, discoverMovie } from "../../../service/serverService";
@@ -42,7 +41,7 @@ export default function Page() {
           <div className="content">
             <div className="movie-grid">
               {movies.map((movie, i) => (
-                <MovieCard key={i} movie={movie} />
+                <MovieCard key={i} {...movie} />
               ))}
             </div>
           </div>
