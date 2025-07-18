@@ -2,7 +2,11 @@ import { GET, POST, PUT, DELETE } from "../client/http_request";
 
 export async function getCountries() {
   const response = await GET("https://api.themoviedb.org/3/configuration/countries");
-  return response;
+  const countries = response.data.map(country => ({
+        label: country.english_name,
+        value: country.iso_3166_1,
+      }));
+  return countries;
 }
 
 export async function getPlatforms(watchRegion = "IN") {
@@ -12,7 +16,7 @@ export async function getPlatforms(watchRegion = "IN") {
 
 export async function getGenres() {
   const response = await GET("https://api.themoviedb.org/3/genre/movie/list");
-  return response;
+  return response.data.genres;
 }
 
 export async function getPopularMovies() {
@@ -36,10 +40,10 @@ export async function getTopRatedMovies() {
 }
 
 export async function discoverMovie(filters = {}) {
-  const { sortBy = "popularity.desc", platforms = [] } = filters;
+  const { sortBy = "popularity.desc", watch_region = '', platforms = [], genres = [] } = filters;
   
   // Construct the URL with the sortBy and platforms filters
-  const response = await GET(`https://api.themoviedb.org/3/discover/movie?sort_by=${sortBy}&with_watch_providers=${platforms.join("|")}&watch_region=IN`);
+  const response = await GET(`https://api.themoviedb.org/3/discover/movie?sort_by=${sortBy}&with_watch_providers=${platforms.join("|")}&watch_region=${watch_region}&with_genres=${genres.join("|")}`);
   return response;
 }
 

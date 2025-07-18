@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import MovieCard from "@/components/common/movie-card";
 import Sidebar from "@/components/common/sidebar";
 import { getPopularMovies, discoverMovie } from "../../../service/serverService";
@@ -11,7 +11,9 @@ export default function Page() {
   const [movies, setMovies] = useState([]);
   const [filters, setFilters] = useState({
     sortBy: "popularity.desc",
+    watch_region: '',
     platforms: [],
+    genres: [],
   });
   
   const updateFilters = (newFilters) => {
@@ -43,15 +45,17 @@ export default function Page() {
   return (
     <>
       <div className="main-content">
-        <Sidebar onChange={updateFilters} filter={filters} />
+        <Suspense fallback={<p>Loading...</p>}>
+          <Sidebar onChange={updateFilters} filter={filters} />
+        </Suspense>
         <div className="content">
           <div className="movie-grid">
             {movies.map((movie, i) => (
               <MovieCard key={i} {...movie} />
             ))}
-            <div className="load-more-button">
+            {/* <div className="load-more-button">
               <button>Load More</button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

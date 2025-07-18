@@ -1,42 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { use, useState, useEffect } from "react";
+import CustomSelect from "./custom-select";
 import { getPlatforms, getCountries, getGenres } from "../../service/serverService";
 import { sortOptions } from "@/utils/constant";
 import "../../styles/components/sidebar.css";
+
+const getCountriesPromise = getCountries();
+const getGenresPromise = getGenres();
 
 export default function Sidebar({ filter, onChange }) {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(true);
   const [platformDropDown, setPlatformDropDown] = useState(false);
   const [filtersDropDown, setFiltersDropDown] = useState(false);
   const [platforms, setPlatforms] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [genres, setGenres] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedPlatform, setSelectedPlatform] = useState([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const countries = use(getCountriesPromise);
+  const genres = use(getGenresPromise);
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      const response = await getCountries();
-      const countryOptions = response.data.map(country => ({
-        label: country.english_name,
-        value: country.iso_3166_1,
-      }));
-      setCountries(countryOptions);
-      if (countryOptions.length > 0) {
-        setSelectedCountry(countryOptions[0].value);
-      }
-    };
-
-    const fetchGenres = async () => {
-      const response = await getGenres();
-      setGenres(response.data.genres || []);
-    };
-    Promise.all([
-      fetchCountries(),
-      fetchGenres(),
-    ])
+    setSelectedCountry(countries[0]?.value);
   }, []);
 
   useEffect(() => {
@@ -58,13 +43,11 @@ export default function Sidebar({ filter, onChange }) {
 
   const handlePlatformChange = (e) => {
     e.preventDefault();
-    const selectedPlatforms = selectedPlatform.length > 0 ? selectedPlatform : platforms.map(p => p.id);
-    onChange({ platforms: selectedPlatforms });
+    onChange({ platforms: selectedPlatforms, watch_region: selectedCountry });
   }
 
   const handleGenreChange = (e) => {
     e.preventDefault();
-    const selectedGenres = selectedGenres.length > 0 ? selectedGenres : genres.map(p => p.id);
     onChange({ genres: selectedGenres });
   }
 
@@ -76,18 +59,7 @@ export default function Sidebar({ filter, onChange }) {
           <div className="sort-dropdown">
             <div className="section-header">
               <h3 className="section-title">Sort Results By</h3>
-              <select
-                id="sort"
-                className="select-dropdown"
-                value={filter.sortBy}
-                onChange={handleSortChange}
-              >
-              {sortOptions.map((option, i) => (
-                <option key={i} value={option.value} className="sort-option">
-                  {option.label}
-                </option>
-              ))}
-              </select>
+              <CustomSelect value={filter.sortBy} onChange={handleSortChange} options={sortOptions}/>
             </div>
           </div>
           )
@@ -99,46 +71,34 @@ export default function Sidebar({ filter, onChange }) {
         { platformDropDown && (
           <div className="sort-dropdown">
             <div className="section-header">
-              <h3 className="section-title">Country</h3>
-              <select
-                id="filter-country"
-                className="select-dropdown"
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-              >
-                { countries.map((country, i) => (
-                  <option key={i} value={country.value} className="country-option">
-                    {country.label}
-                  </option>
-                ))}
-              </select>
-              <h3 className="section-title">Platforms</h3>
               <form onSubmit={handlePlatformChange}>
-                <ul className="check-list">
+                <h3 className="section-title">Country</h3>
+                <CustomSelect value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)} options={countries}/>
+                <h3 className="section-title">Platforms</h3>
+                <div className="check-list">
                   {platforms.map((platform, i) => (
-                    <li key={i} className="check-item">
-                      <label>
-                        <input
-                          type="checkbox"
-                          key={i}
-                          value={platform.provider_id}
-                          onChange={()=> {
-                            const isChecked = selectedPlatform.includes(platform.provider_id);
-                            const newPlatforms = isChecked
-                              ? selectedPlatform.filter(id => id !== platform.provider_id)
-                              : [...selectedPlatform, platform.provider_id];
-                            setSelectedPlatform(newPlatforms);
-                          }}
-                        />
-                        {platform.provider_name}
-                      </label>
-                    </li>
+                    <label key={i} className="check-item">
+                      <input
+                        type="checkbox"
+                        key={i}
+                        value={platform.provider_id}
+                        onChange={()=> {
+                          const isChecked = selectedPlatforms.includes(platform.provider_id);
+                          const newPlatforms = isChecked
+                            ? selectedPlatforms.filter(id => id !== platform.provider_id)
+                            : [...selectedPlatforms, platform.provider_id];
+                          setSelectedPlatforms(newPlatforms);
+                        }}
+                      />
+                      {platform.provider_name}
+                    </label>
                   ))}
-                </ul>
+                </div>
                 <button type="submit" className="submit-button">Apply</button>
                 <button type="reset" className="submit-button" onClick={() => {
-                  setSelectedPlatform([]);
-                  onChange({ platforms: [] });
+                  setSelectedPlatforms([]);
+                  setSelectedCountry(countries[0].value);
+                  onChange({ platforms: [], watch_region: '' });
                 }}>Clear filter</button>
               </form>
             </div>
@@ -153,10 +113,9 @@ export default function Sidebar({ filter, onChange }) {
             <div className="section-header">
               <h3 className="section-title">Genres</h3>
               <form onSubmit={handleGenreChange}>
-                <ul className="check-list">
+                <div className="check-list">
                   {genres.map((genre, i) => (
-                    <li key={i} className="check-item">
-                      <label>
+                      <label className="check-item" key={i}>
                         <input
                           type="checkbox"
                           value={genre.id}
@@ -170,13 +129,12 @@ export default function Sidebar({ filter, onChange }) {
                         />
                         {genre.name}
                       </label>
-                    </li>
                   ))}
-                </ul>
+                </div>
                 <button type="submit" className="submit-button">Apply</button>
                 <button type="reset" className="submit-button" onClick={() => {
-                  setSelectedPlatform([]);
-                  onChange({ platforms: [] });
+                  setSelectedPlatforms([]);
+                  onChange({ genres: [] });
                 }}>Clear filter</button>
               </form>
             </div>

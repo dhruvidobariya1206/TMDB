@@ -23,8 +23,6 @@
 }
 
 .sort-dropdown {
-  top: 100%;
-  left: 0;
   width: 100%;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -36,22 +34,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
-  padding: 10px 10px 5px 10px;
+  padding: 10px 10px 0 10px;
   font-size: 16px;
 }
 
 .section-title {
-  margin: 0 0 10px;
+  margin: 5px 0 10px;
   font-size: 16px;
-}
-
-.select-dropdown {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f5f5f5;
 }
 
 .country-option {
@@ -60,23 +49,21 @@
 }
 
 .check-list {
-  padding: 0 5px 5px 5px;
   overflow-y: auto;
-  gap: 16px;
   scroll-snap-type: y mandatory;
   scrollbar-width: thin;
   max-height: 400px;
-  margin-top: 15px;
 }
 
 .check-item {
-  align-items: center;
-  margin-bottom: 6px;
+  display: list-item;
+  padding: 0 5px 5px 5px;
+  margin-bottom: 3px;
+  cursor: pointer;
 }
 
-.check-item label {
-  align-items: center;
-  cursor: pointer;
+.check-item input {
+  margin-right: 5px;
 }
 
 .submit-button {
